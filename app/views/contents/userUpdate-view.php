@@ -1,0 +1,109 @@
+<div class="container is-fluid mb-2">
+	<?php
+
+	$id = $insLogin->limpiarCadena($url[1]);
+
+	if ($id == $_SESSION['id']) {
+	?>
+		<h1 class="title">Mi cuenta</h1>
+		<h2 class="subtitle"><i class="fas fa-sync-alt"></i> &nbsp; Actualizar cuenta</h2>
+	<?php } else { ?>
+		<h1 class="title">Usuarios</h1>
+		<h2 class="subtitle"><i class="fas fa-sync-alt"></i> &nbsp; Actualizar usuario</h2>
+	<?php } ?>
+</div>
+<div class="container pb-2 pt-2">
+	<?php
+
+	include "./app/views/inc/btn_back.php";
+
+	$datos = $insLogin->seleccionarDatos("Unico", "usuario", "usuario_id", $id);
+
+	if ($datos->rowCount() == 1) {
+		$datos = $datos->fetch();
+	?>
+		<h2 class="title has-text-centered"><?php echo $datos['usuario_nombre'] . " " . $datos['usuario_apellido']; ?></h2>
+
+		<form class="FormularioAjax" action="<?php echo APP_URL; ?>app/ajax/usuarioAjax.php" method="POST" autocomplete="off">
+
+			<input type="hidden" name="modulo_usuario" value="actualizar">
+			<input type="hidden" name="usuario_id" value="<?php echo $datos['usuario_id']; ?>">
+
+			<div class="columns">
+				<div class="column form">
+					<div class="control form-item">
+						<input class="input" type="text" name="usuario_nombre" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{3,40}" maxlength="40" value="<?php echo $datos['usuario_nombre']; ?>" required>
+						<label>Nombres <?php echo CAMPO_OBLIGATORIO; ?></label>
+					</div>
+				</div>
+				<div class="column form">
+					<div class="control form-item">
+						<input class="input" type="text" name="usuario_apellido" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{3,40}" maxlength="40" value="<?php echo $datos['usuario_apellido']; ?>" required>
+						<label>Apellidos <?php echo CAMPO_OBLIGATORIO; ?></label>
+					</div>
+				</div>
+			</div>
+			<div class="columns">
+				<div class="column form">
+					<div class="control form-item">
+						<input class="input" type="text" name="usuario_usuario" pattern="[a-zA-Z0-9]{4,20}" maxlength="20" value="<?php echo $datos['usuario_usuario']; ?>" required>
+						<label>Usuario <?php echo CAMPO_OBLIGATORIO; ?></label>
+					</div>
+				</div>
+				<div class="column form">
+					<div class="control form-item">
+						<input class="input" type="email" name="usuario_email" maxlength="70" value="<?php echo $datos['usuario_email']; ?>">
+						<label>Email</label>
+					</div>
+				</div>
+			</div>
+			<br>
+			<p class="has-text-centered">
+				SI desea actualizar la clave de este usuario por favor llene los 2 campos. Si NO desea actualizar la clave deje los campos vacíos.
+			</p>
+			<br>
+			<div class="columns">
+				<div class="column form">
+					<div class="control form-item">
+						<input class="input" type="password" name="usuario_clave_1" pattern="[a-zA-Z0-9$@.-]{7,100}" maxlength="100">
+						<label>Nueva clave</label>
+					</div>
+				</div>
+				<div class="column form">
+					<div class="control form-item">
+						<input class="input" type="password" name="usuario_clave_2" pattern="[a-zA-Z0-9$@.-]{7,100}" maxlength="100">
+						<label>Repetir nueva clave</label>
+					</div>
+				</div>
+			</div>
+			<br>
+			<p class="has-text-centered">
+				Para poder actualizar los datos de este usuario por favor ingrese su USUARIO y CLAVE con la que ha iniciado sesión
+			</p>
+			<div class="columns">
+				<div class="column form">
+					<div class="control form-item">
+						<input class="input" type="text" name="administrador_usuario" pattern="[a-zA-Z0-9]{4,20}" maxlength="20" required>
+						<label>Usuario <?php echo CAMPO_OBLIGATORIO; ?></label>
+					</div>
+				</div>
+				<div class="column form">
+					<div class="control form-item">
+						<input class="input" type="password" name="administrador_clave" pattern="[a-zA-Z0-9$@.-]{7,100}" maxlength="100" required>
+						<label>Clave <?php echo CAMPO_OBLIGATORIO; ?></label>
+					</div>
+				</div>
+			</div>
+			<p class="has-text-centered">
+				<button type="submit" class="button is-success is-rounded"><i class="fas fa-sync-alt"></i> &nbsp; Actualizar</button>
+			</p>
+			<p class="has-text-centered pt-6">
+				<small>Los campos marcados con <?php echo CAMPO_OBLIGATORIO; ?> son obligatorios</small>
+			</p>
+		</form>
+	<?php
+	} else {
+		include "./app/views/inc/error_alert.php";
+	}
+	?>
+</div>
